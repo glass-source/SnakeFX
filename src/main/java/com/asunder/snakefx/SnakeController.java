@@ -23,11 +23,8 @@ public class SnakeController {
     public Rectangle getSnakeHead() {
         return snakeBody[0];
     }
-    public Rectangle[] getSnakeBody() {
-        return snakeBody;
-    }
     private KeyCode currentDirection;
-    public Rectangle drawScore = new Rectangle(20, 20, Color.GOLD);
+    public Rectangle drawnScore = new Rectangle(20, 20, Color.GOLD);
     public Label scoreLabel = new Label("Score: 0");
 
     private void stopGame() {
@@ -67,18 +64,17 @@ public class SnakeController {
 
                                     snakePart.setTranslateX(xPositions[i]);
                                     snakePart.setTranslateY(yPositions[i]);
-
-
                                 }
                             }
 
-                            if (snakeHeadX == drawScore.getTranslateX() && snakeHeadY == drawScore.getTranslateY()) {
+                            if (snakeHeadX == drawnScore.getTranslateX() && snakeHeadY == drawnScore.getTranslateY()) {
                                 currentScore++;
-                                drawScore.setTranslateX(20 * new Random().nextInt(1, 25));
-                                drawScore.setTranslateY(20 * new Random().nextInt(1, 25));
+                                drawnScore.setTranslateX(20 * new Random().nextInt(1, 25));
+                                drawnScore.setTranslateY(20 * new Random().nextInt(1, 25));
                                 scoreLabel.setText("Score: " + (currentScore - 5));
                                 snakeBody[currentScore - 1] = new Rectangle(20, 20);
                                 var snakePart = snakeBody[currentScore - 1];
+                                var group = (Group) SnakeFX.getScene().getRoot();
                                 snakePart.setFill(Color.GREEN);
                                 snakePart.setStroke(Color.BLACK);
                                 snakePart.setStrokeWidth(2);
@@ -86,7 +82,6 @@ public class SnakeController {
                                 snakePart.setY(0);
                                 snakePart.setTranslateX(-20);
                                 snakePart.setTranslateY(-20);
-                                Group group = (Group) SnakeFX.getScene().getRoot();
                                 group.getChildren().add(snakePart);
                             }
 
@@ -104,6 +99,7 @@ public class SnakeController {
             }
         };
     }
+
     public void onKeyPressed(KeyEvent event) {
         switch (event.getCode()) {
             case UP, W -> {
@@ -138,13 +134,38 @@ public class SnakeController {
                 }
             }
             
-            case R -> {
-                stopGame();
-            }
+            case R -> stopGame();
 
             case ESCAPE, SPACE -> isRunning = !isRunning;
         }
 
+    }
+
+    public void initSnake(Group root) {
+        for (int i = 0; i < 5; i++) {
+            snakeBody[i] = new Rectangle(20, 20);
+            snakeBody[i].setX(0);
+            snakeBody[i].setY(0);
+            snakeBody[i].setFill(Color.GREEN);
+            snakeBody[i].setStroke(Color.BLACK);
+            snakeBody[i].setStrokeWidth(2);
+            root.getChildren().add(snakeBody[i]);
+        }
+
+        snakeBody[0].setFill(Color.RED);
+    }
+
+    public void initScore(Group root) {
+        scoreLabel.setTranslateX(0);
+        scoreLabel.setTranslateY(0);
+        drawnScore.setX(0);
+        drawnScore.setY(0);
+        drawnScore.setTranslateY(120);
+        drawnScore.setTranslateX(120);
+        drawnScore.setStroke(Color.BLACK);
+        drawnScore.setStrokeWidth(2);
+        root.getChildren().add(drawnScore);
+        root.getChildren().add(scoreLabel);
     }
 
 }
