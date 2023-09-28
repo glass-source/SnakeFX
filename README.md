@@ -1,3 +1,3 @@
 # SnakeFX
 Small Snake-like game built on JavaFX made for fun
-Compiled with JDK 17
+Compile with Java 17, make sure to compile Main_1 as your main class.
