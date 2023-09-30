@@ -14,20 +14,18 @@ public class SnakeController {
 
     public int directionX = -1;
     public int directionY = 0;
-    private boolean isRunning = false;
-    private boolean isPaused = false;
     public int currentScore = 5;
-    private int gameSpeed = 96;
-    private Rectangle[] snakeBody = new Rectangle[1000];
-    private double[] xPositions = new double[1000];
-    private double[] yPositions = new double[1000];
-    private KeyCode currentDirection;
     public Rectangle drawnScore = new Rectangle(20, 20, Color.GOLD);
     public Label scoreLabel = new Label("Score: 0");
+    private boolean isRunning = false;
+    private int gameSpeed = 96;
+    private double[] xPositions = new double[1000];
+    private double[] yPositions = new double[1000];
+    private Rectangle[] snakeBody = new Rectangle[1000];
+    private KeyCode currentDirection;
     public Rectangle getSnakeHead() {
         return snakeBody[0];
     }
-
     public AnimationTimer getAnimationTimer() {
 
         return new AnimationTimer() {
@@ -37,7 +35,7 @@ public class SnakeController {
                 try {
 
                     if (now - previousTime >= gameSpeed * 1_000_000L) {
-                        if (isRunning && !isPaused) {
+                        if (isRunning) {
                             moveSnake();
                             checkScore();
                             checkGameOver();
@@ -52,7 +50,9 @@ public class SnakeController {
     }
     public void onKeyPressed(KeyEvent event) {
         switch (event.getCode()) {
+
             case Q -> stopGame();
+
             case UP, W -> {
                 if (currentDirection != KeyCode.DOWN) {
                     directionX = 0;
@@ -92,7 +92,6 @@ public class SnakeController {
 
             case ESCAPE, SPACE -> isRunning = !isRunning;
         }
-
     }
     public void initSnake(Group root) {
         for (int i = 0; i < 5; i++) {
@@ -122,14 +121,14 @@ public class SnakeController {
         root.getChildren().add(scoreLabel);
     }
     public void stopGame() {
-        var root = (Group) SnakeFX.getScene().getRoot();
         isRunning = false;
+        var root = (Group) SnakeFX.getScene().getRoot();
         root.getChildren().removeAll();
-        resetComponents();
     }
     public void startGame() {
         isRunning = true;
         var root = (Group) SnakeFX.getScene().getRoot();
+        resetComponents();
         initScore(root);
         initSnake(root);
     }
@@ -187,10 +186,10 @@ public class SnakeController {
         var snakeHeadX = getSnakeHead().getTranslateX();
         var snakeHeadY = getSnakeHead().getTranslateY();
 
-        if (snakeHeadX < -1) isRunning = false;
-        if (snakeHeadY < -1) isRunning = false;
-        if (snakeHeadX > SnakeFX.getMainStage().getWidth()) isRunning = false;
-        if (snakeHeadY > SnakeFX.getMainStage().getHeight()) isRunning = false;
+        if (snakeHeadX < -1) stopGame();
+        if (snakeHeadY < -1) stopGame();
+        if (snakeHeadX > SnakeFX.getMainStage().getWidth()) stopGame();
+        if (snakeHeadY > SnakeFX.getMainStage().getHeight()) stopGame();
     }
     private void resetComponents() {
         for (int i = 0; i < (currentScore); i++) {
